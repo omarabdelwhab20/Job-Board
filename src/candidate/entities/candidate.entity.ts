@@ -18,16 +18,16 @@ export interface Experience {
 
 @Entity()
 export class Candidate {
-  @PrimaryColumn()
+  @PrimaryColumn({ type: 'uuid' })
   id: string;
 
   @OneToOne(() => User, { cascade: true, onDelete: 'CASCADE' })
-  @JoinColumn()
+  @JoinColumn({ name: 'id' })
   user: User;
 
   @Column({
     type: 'varchar',
-    nullable: false,
+    nullable: true,
   })
   summary: string;
 
@@ -53,8 +53,8 @@ export class Candidate {
   @Column('simple-array', { nullable: true })
   skills: string[];
 
-  @Column({ nullable: true })
-  experience: Experience;
+  @Column({ type: 'jsonb', nullable: true })
+  experience: Experience[];
 
   @CreateDateColumn()
   createdAt: string;

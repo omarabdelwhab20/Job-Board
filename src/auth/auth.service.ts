@@ -11,18 +11,23 @@ import { JwtService } from '@nestjs/jwt';
 import { VerifyCodeDto } from './dto/verify-code.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { ResetPasswordtDto } from './dto/reset-password.dto';
+import { Candidate } from 'src/candidate/entities/candidate.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+
+    @InjectRepository(Candidate)
+    private readonly candidateRepository: Repository<Candidate>,
+
     private readonly mailerService: MailerService,
 
     private readonly jwtService: JwtService,
   ) {}
   async sendVerificationLink(email: string, token: string) {
-    const verificationLink = `http://localhost:6000/auth/verify-email/${token}`;
+    const verificationLink = `http://localhost:3000/auth/verify-email/${token}`;
 
     const htmlMessage = `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h2 style="color: #333;">Welcome to Chat Application!</h2>
@@ -46,7 +51,7 @@ export class AuthService {
   }
 
   async signUp(signUpDto: SignUpDto) {
-    const { email, password } = signUpDto;
+    const { email, password, role } = signUpDto;
 
     const isFound = await this.userRepository.findOneBy({ email });
 
@@ -70,6 +75,13 @@ export class AuthService {
     await this.userRepository.manager.transaction(async (manager) => {
       await manager.save(newUser);
       await this.sendVerificationLink(email, verificationLink);
+      if (role === 'candidate') {
+        const candidate = this.candidateRepository.create({
+          id: newUser.id,
+          user: newUser,
+        });
+        await manager.save(candidate);
+      }
     });
 
     return {
@@ -122,6 +134,7 @@ export class AuthService {
       id: isFound.id,
       email: isFound.email,
       name: isFound.userName,
+      role: isFound.role,
     });
 
     return {

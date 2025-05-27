@@ -1,10 +1,14 @@
 import {
   IsEmail,
   IsEnum,
+  IsLocale,
   IsNotEmpty,
+  IsOptional,
+  IsPhoneNumber,
   MaxLength,
   MinLength,
 } from 'class-validator';
+import { Role } from '../entities/auth.entity';
 
 export class SignUpDto {
   @IsNotEmpty({ message: 'User name is required' })
@@ -19,4 +23,15 @@ export class SignUpDto {
   @IsNotEmpty({ message: 'Password is required' })
   @MinLength(6, { message: 'Password must be at least 6 characters' })
   password: string;
+
+  @IsNotEmpty({ message: 'Role is required' })
+  @IsEnum(Role)
+  role: Role;
+
+  @IsOptional()
+  @IsPhoneNumber()
+  phone: string;
+
+  @IsOptional()
+  location: string;
 }

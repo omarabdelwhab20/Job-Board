@@ -10,6 +10,7 @@ import {
 export enum Role {
   RECRUITER = 'recruiter',
   CANDIDATE = 'candidate',
+  ADMIN = 'admin',
 }
 
 @Entity()
@@ -35,6 +36,11 @@ export class User {
     nullable: false,
   })
   password: string;
+
+
+
+  @Column({ type: 'varchar', nullable: false })
+  role: Role;
 
   @Column({
     type: 'varchar',
