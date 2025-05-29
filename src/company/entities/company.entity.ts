@@ -1,20 +1,18 @@
+import { Candidate } from 'src/candidate/entities/candidate.entity';
+import { Recruiter } from 'src/recruiter/entities/recruiter.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
-  Index,
+  JoinColumn,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-
-export enum Role {
-  RECRUITER = 'recruiter',
-  CANDIDATE = 'candidate',
-  ADMIN = 'admin',
-}
+import { Url } from 'url';
 
 @Entity()
-export class User {
+export class Company {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -23,7 +21,8 @@ export class User {
     nullable: false,
     unique: true,
   })
-  userName: string;
+  name: string;
+
   @Column({
     type: 'varchar',
     nullable: false,
@@ -37,58 +36,47 @@ export class User {
   })
   password: string;
 
-
-  @Column({ type: 'varchar', nullable: false })
-  role: Role;
+  @Column({
+    type: 'varchar',
+    nullable: false,
+  })
+  description: string;
 
   @Column({
     type: 'varchar',
-    nullable: true,
+    nullable: false,
   })
-  phone?: string;
+  logoUrl: string;
 
   @Column({
     type: 'varchar',
-    nullable: true,
+    nullable: false,
   })
-  profilePictureUrl: string;
+  logoPublicId: string;
 
   @Column({
     type: 'varchar',
-    nullable: true,
+    default: 'company',
   })
-  @Index()
-  profilePicturePublicId: string;
+  role: string;
 
   @Column({
     type: 'varchar',
-    nullable: true,
+    nullable: false,
   })
-  location?: string;
-
-  @Column({
-    type: 'boolean',
-    default: false,
-  })
-  isVerified: boolean;
+  website: string;
 
   @Column({
     type: 'varchar',
-    nullable: true,
+    nullable: false,
   })
-  verificationLink: string;
+  location: string;
 
-  @Column({
-    type: 'varchar',
-    nullable: true,
-  })
-  resetPasswordCode: string;
+  @OneToMany(() => Recruiter, (recruiter) => recruiter.company, { eager: true })
+  recruiters: Recruiter[];
 
-  @Column({
-    type: 'date',
-    nullable: true,
-  })
-  resetPasswordCodeExpire: Date;
+  @OneToMany(() => Candidate, (candidate) => candidate.company, { eager: true })
+  candidates: Candidate[];
 
   @CreateDateColumn()
   createdAt: Date;

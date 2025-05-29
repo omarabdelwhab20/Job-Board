@@ -3,6 +3,7 @@ import {
   IsArray,
   IsNotEmpty,
   IsOptional,
+  IsPhoneNumber,
   IsString,
   MaxLength,
   MinLength,
@@ -28,6 +29,18 @@ export class UpdateProfileDto {
   @MaxLength(150, { message: 'Summary must be at most 150 characters' })
   @MinLength(50, { message: 'Summary must be at least 50 characters' })
   summary: string;
+
+  @IsOptional()
+  @IsString()
+  userName: string;
+
+  @IsOptional()
+  @IsPhoneNumber()
+  phone: string;
+
+  @IsOptional()
+  @IsString()
+  location: string;
 
   @IsOptional()
   @IsArray()

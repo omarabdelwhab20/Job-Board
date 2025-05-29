@@ -45,6 +45,20 @@ export class UploadFileService {
     };
   }
 
+  async uploadCompanyLogo(
+    image: Express.Multer.File,
+  ): Promise<{ url: string; publicId: string }> {
+    const result = await this.uploadFile(image, {
+      folder: `companies`,
+      transformation: { width: 500, height: 800, crop: 'fill' },
+    });
+
+    return {
+      url: result.secure_url,
+      publicId: result.public_id,
+    };
+  }
+
   async uploadResume(
     file: Express.Multer.File,
     userId: string,

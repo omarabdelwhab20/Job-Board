@@ -24,25 +24,12 @@ export class CandidateService {
     private readonly uploadFileService: UploadFileService,
   ) {}
 
-  
-
   async getProfile(currentUser: any) {
-    const isFound = await this.candidateRepository.findOneBy({
-      id: currentUser.id,
-    });
-
-    if (!isFound) {
-      throw new NotFoundException('Error finding that page');
-    }
-
-    if (currentUser.role !== 'candidate') {
-      throw new HttpException('Not authorized', HttpStatus.UNAUTHORIZED);
-    }
-
     const profileData = await this.candidateRepository
       .createQueryBuilder('candidate')
       // Joining the related User entity using the 'user' relation defined in the Candidate entity.
       .leftJoinAndSelect('candidate.user', 'user')
+      .leftJoinAndSelect('candidate.company', 'company')
       // Select only the columns we need from both Candidate and User.
       .select([
         'candidate.id',
@@ -52,15 +39,24 @@ export class CandidateService {
         'candidate.resumeOriginalName',
         'candidate.resumeUrl',
         'user.email',
+        'user.role',
         'user.userName',
         'user.location',
         'user.phone',
         'user.profilePictureUrl',
+        'company.name',
+        'company.logoUrl',
       ])
       .where('candidate.id = :id', { id: currentUser.id })
       .getOne();
 
-    console.log(profileData);
+    if (!profileData) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (profileData.user.role !== 'candidate') {
+      throw new HttpException('Not authorized', HttpStatus.UNAUTHORIZED);
+    }
 
     return {
       status: HttpStatus.OK,
@@ -69,22 +65,37 @@ export class CandidateService {
   }
 
   async updateProfile(updateProfileDto: UpdateProfileDto, currentUser: any) {
-    const isFound = await this.candidateRepository.findOneBy({
-      id: currentUser.id,
-    });
+    const candidate = await this.candidateRepository
+      .createQueryBuilder('candidate')
+      .leftJoinAndSelect('candidate.user', 'user')
+      .where('candidate.id = :id', { id: currentUser.id })
+      .getOne();
 
-    if (!isFound) {
+    if (!candidate) {
       throw new NotFoundException('Error finding this page');
     }
 
-    const profileData = await this.candidateRepository.merge(isFound, {
+    if (candidate.user.role !== 'candidate') {
+      throw new HttpException('Not authorized', HttpStatus.UNAUTHORIZED);
+    }
+
+    if (updateProfileDto.userName) {
+      candidate.user.userName = updateProfileDto.userName;
+    }
+    if (updateProfileDto.phone) {
+      candidate.user.phone = updateProfileDto.phone;
+    }
+    if (updateProfileDto.location) {
+      candidate.user.location = updateProfileDto.location;
+    }
+    const newProfileData = await this.candidateRepository.merge(candidate, {
       ...updateProfileDto,
     });
-    await this.candidateRepository.save(profileData);
+    await this.candidateRepository.save(newProfileData);
 
     return {
       status: HttpStatus.OK,
-      data: profileData,
+      data: newProfileData,
     };
   }
 
@@ -119,9 +130,12 @@ export class CandidateService {
   }
 
   async uploadPicture(image: Express.Multer.File, currentUser: any) {
-    const isFound = await this.candidateRepository.findOneBy({
-      id: currentUser.id,
+    const isFound = await this.candidateRepository.findOne({
+      where: { id: currentUser.id },
+      relations: ['user'],
     });
+
+    console.log('Candidate Data', isFound);
 
     if (!isFound) {
       throw new NotFoundException('Error finding that page');

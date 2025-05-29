@@ -7,6 +7,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { UploadModule } from './upload/upload.module';
 import { CandidateModule } from './candidate/candidate.module';
 import { RecruiterModule } from './recruiter/recruiter.module';
+import { CompanyModule } from './company/company.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { RecruiterModule } from './recruiter/recruiter.module';
     UploadModule,
     CandidateModule,
     RecruiterModule,
+    CompanyModule,
   ],
   controllers: [],
   providers: [],

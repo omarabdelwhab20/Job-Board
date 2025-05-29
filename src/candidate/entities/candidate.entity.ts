@@ -1,10 +1,12 @@
 import { User } from 'src/auth/entities/auth.entity';
+import { Company } from 'src/company/entities/company.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   Index,
   JoinColumn,
+  ManyToOne,
   OneToOne,
   PrimaryColumn,
   UpdateDateColumn,
@@ -55,6 +57,10 @@ export class Candidate {
 
   @Column({ type: 'jsonb', nullable: true })
   experience: Experience[];
+
+  @ManyToOne(() => Company, (company) => company.candidates, { nullable: true })
+  @JoinColumn({ name: 'companyId' })
+  company: Company;
 
   @CreateDateColumn()
   createdAt: string;

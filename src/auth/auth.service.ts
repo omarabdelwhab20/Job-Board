@@ -12,6 +12,7 @@ import { VerifyCodeDto } from './dto/verify-code.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { ResetPasswordtDto } from './dto/reset-password.dto';
 import { Candidate } from 'src/candidate/entities/candidate.entity';
+import { Recruiter } from 'src/recruiter/entities/recruiter.entity';
 
 @Injectable()
 export class AuthService {
@@ -22,6 +23,9 @@ export class AuthService {
     @InjectRepository(Candidate)
     private readonly candidateRepository: Repository<Candidate>,
 
+    @InjectRepository(Recruiter)
+    private readonly recruiterRepository: Repository<Recruiter>,
+
     private readonly mailerService: MailerService,
 
     private readonly jwtService: JwtService,
@@ -30,7 +34,7 @@ export class AuthService {
     const verificationLink = `http://localhost:3000/auth/verify-email/${token}`;
 
     const htmlMessage = `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #333;">Welcome to Chat Application!</h2>
+        <h2 style="color: #333;">Welcome to Job Board!</h2>
         <p>Please verify your email by clicking the button below:</p>
         <a 
           href="${verificationLink}" 
@@ -81,6 +85,14 @@ export class AuthService {
           user: newUser,
         });
         await manager.save(candidate);
+      }
+
+      if (role === 'recruiter') {
+        const recruiter = this.recruiterRepository.create({
+          id: newUser.id,
+          user: newUser,
+        });
+        await manager.save(recruiter);
       }
     });
 
