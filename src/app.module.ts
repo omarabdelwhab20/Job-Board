@@ -8,6 +8,7 @@ import { UploadModule } from './upload/upload.module';
 import { CandidateModule } from './candidate/candidate.module';
 import { RecruiterModule } from './recruiter/recruiter.module';
 import { CompanyModule } from './company/company.module';
+import { RecruiterRequestModule } from './recruiter-request/recruiter-request.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { CompanyModule } from './company/company.module';
     CandidateModule,
     RecruiterModule,
     CompanyModule,
+    RecruiterRequestModule,
   ],
   controllers: [],
   providers: [],
