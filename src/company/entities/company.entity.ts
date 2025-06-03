@@ -1,4 +1,5 @@
 import { Candidate } from 'src/candidate/entities/candidate.entity';
+import { Job } from 'src/job/entities/job.entity';
 import { Recruiter } from 'src/recruiter/entities/recruiter.entity';
 import {
   Column,
@@ -77,6 +78,9 @@ export class Company {
 
   @OneToMany(() => Candidate, (candidate) => candidate.company, { eager: true })
   candidates: Candidate[];
+
+  @OneToMany(() => Job, (job) => job.company, { eager: false })
+  jobs: Job[];
 
   @CreateDateColumn()
   createdAt: Date;

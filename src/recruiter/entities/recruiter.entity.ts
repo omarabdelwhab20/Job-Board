@@ -1,11 +1,13 @@
 import { User } from 'src/auth/entities/auth.entity';
 import { Company } from 'src/company/entities/company.entity';
+import { Job } from 'src/job/entities/job.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryColumn,
   UpdateDateColumn,
@@ -28,6 +30,9 @@ export class Recruiter {
 
   @ManyToOne(() => Company, (company) => company.recruiters)
   company: Company;
+
+  @OneToMany(() => Job , (job) => job.recruiter)
+  jobs : Job[]
 
   @Column({
     type: 'varchar',

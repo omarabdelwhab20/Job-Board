@@ -9,6 +9,7 @@ import { CandidateModule } from './candidate/candidate.module';
 import { RecruiterModule } from './recruiter/recruiter.module';
 import { CompanyModule } from './company/company.module';
 import { RecruiterRequestModule } from './recruiter-request/recruiter-request.module';
+import { JobModule } from './job/job.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { RecruiterRequestModule } from './recruiter-request/recruiter-request.mo
     RecruiterModule,
     CompanyModule,
     RecruiterRequestModule,
+    JobModule,
   ],
   controllers: [],
   providers: [],
