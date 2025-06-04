@@ -1,3 +1,4 @@
+import { Application } from 'src/application/entities/application.entity';
 import { User } from 'src/auth/entities/auth.entity';
 import { Company } from 'src/company/entities/company.entity';
 import {
@@ -7,6 +8,7 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryColumn,
   UpdateDateColumn,
@@ -61,6 +63,9 @@ export class Candidate {
   @ManyToOne(() => Company, (company) => company.candidates, { nullable: true })
   @JoinColumn({ name: 'companyId' })
   company: Company;
+
+  //@OneToMany(() => Application, (applicaation) => applicaation.candidate)
+  //applications: Application[];                              
 
   @CreateDateColumn()
   createdAt: string;

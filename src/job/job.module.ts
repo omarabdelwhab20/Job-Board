@@ -9,5 +9,6 @@ import { RecruiterModule } from 'src/recruiter/recruiter.module';
   imports: [TypeOrmModule.forFeature([Job]), RecruiterModule],
   controllers: [JobController],
   providers: [JobService],
+  exports: [TypeOrmModule],
 })
 export class JobModule {}

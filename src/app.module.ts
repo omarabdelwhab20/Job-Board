@@ -10,6 +10,7 @@ import { RecruiterModule } from './recruiter/recruiter.module';
 import { CompanyModule } from './company/company.module';
 import { RecruiterRequestModule } from './recruiter-request/recruiter-request.module';
 import { JobModule } from './job/job.module';
+import { ApplicationModule } from './application/application.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { JobModule } from './job/job.module';
     CompanyModule,
     RecruiterRequestModule,
     JobModule,
+    ApplicationModule,
   ],
   controllers: [],
   providers: [],
